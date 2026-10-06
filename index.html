@@ -429,7 +429,7 @@ var nav=document.getElementById('nav');function ns(){nav.classList.toggle('scrol
  setInterval(function(){var c=w[i];c.classList.remove('on');c.classList.add('out');i=(i+1)%w.length;var n=w[i];n.classList.remove('out');n.classList.add('on');setTimeout(function(){c.classList.remove('out')},450)},2400)})();
 
 // experience: tabs that auto-advance, with prev/next, keyboard and swipe
-(function(){var sec=document.getElementById('experience'),tabs=[].slice.call(sec.querySelectorAll('[role=tab]')),cur=0,timer=null,resume=null,inView=false,DUR=7000;
+(function(){var sec=document.getElementById('experience'),tabs=[].slice.call(sec.querySelectorAll('[role=tab]')),cur=0,timer=null,resume=null,inView=false,DUR=3000;
  var count=document.getElementById('exp-count');sec.style.setProperty('--dur',DUR/1000+'s');
  function sel(i,dir,focus){i=(i+tabs.length)%tabs.length;var prev=cur;cur=i;
   tabs.forEach(function(b,j){var on=j===i;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;var p=document.getElementById(b.getAttribute('aria-controls'));p.hidden=!on;
