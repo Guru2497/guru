@@ -148,6 +148,7 @@ nav .links a:hover{color:var(--ink)}
 .badge img[src*="db-"],.badge img[src^="data:"]{width:116px}
 .badge .fallback{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.95rem;color:#fff;background:#232f3e}
 .badge .fallback.db{background:#c8322a}
+.badge .fallback.gh{background:#24292f}
 .badge h3{font-size:.92rem;line-height:1.3}
 .badge .meta{font-size:.8rem;color:var(--muted)}
 .badge .verify{font-size:.82rem;font-weight:700;text-decoration:none}
@@ -243,7 +244,7 @@ footer{color:var(--muted);font-size:.85rem;padding-block:22px 36px;border-top:1p
     <div><b>3 TB/day</b><span>telecom logs on a serverless Kafka and AWS stack</span></div>
     <div><b>−40%</b><span>pipeline cost, with zero data loss at 80+ files a minute</span></div>
     <div><b>55% faster</b><span>analytics loads after cutting data volume 88%</span></div>
-    <div><b id="cert-count">9 certs</b><span id="cert-line">7× AWS including Security Specialty, plus Databricks Data Engineer and GenAI</span></div>
+    <div><b id="cert-count">9 certs</b><span id="cert-line">7× AWS including Security Specialty, 2× Databricks, 3× GitHub</span></div>
   </div>
   <div class="stack" aria-label="Core stack">
     <span class="tag">PySpark</span><span class="tag">Databricks</span><span class="tag">Delta Lake</span><span class="tag">Apache Kafka</span><span class="tag">AWS Glue</span><span class="tag">AWS Lambda</span><span class="tag">Redshift</span><span class="tag">Azure Data Factory</span><span class="tag">Python</span><span class="tag">SQL</span>
@@ -330,7 +331,7 @@ footer{color:var(--muted);font-size:.85rem;padding-block:22px 36px;border-top:1p
     <p class="lede">Every badge links to its official verification page.</p>
   </div>
   <div class="badges" id="badges"></div>
-  <p class="more">Also earned: Databricks knowledge badges in Lakeflow Connect, Lakeflow Spark Declarative Pipelines and Data Governance; GitHub Actions, Foundations and Copilot; Google Cloud skill badges. <a href="https://www.credly.com/users/gururaj-jangwad/badges" target="_blank" rel="noopener">See all on Credly</a></p>
+  <p class="more">Also earned: Databricks knowledge badges in Lakeflow Connect, Lakeflow Spark Declarative Pipelines and Data Governance; and Google Cloud skill badges. <a href="https://www.credly.com/users/gururaj-jangwad/badges" target="_blank" rel="noopener">See all on Credly</a></p>
 </section>
 
 <section id="project">
@@ -416,13 +417,16 @@ var B=[
  ['AWS Certified Solutions Architect – Associate','76d83e65-f16e-4fce-ad1c-e54b1391485b','0e284c3f-5164-4b21-8660-0d84737941bc','Apr 2027',0,'aws'],
  ['AWS Certified Developer – Associate','03b04384-ccbe-40cd-a6a2-bf86a9491c8a','b9feab85-1a43-4f6c-99a5-631b88d5461b','Aug 2027',0,'aws'],
  ['AWS Certified SysOps Administrator – Associate','ff7942a2-b2e8-40a3-93fe-a1f7e2fbd215','f0d3fbb9-bfa7-4017-9989-7bde8eaf42b1','Sep 2027',0,'aws'],
- ['AWS Certified Cloud Practitioner','71e2b222-eeb2-4266-9a5e-01273bd3aa5d','00634f82-b07f-4bbd-a6bb-53de397fc3a6','May 2028',0,'aws']
+ ['AWS Certified Cloud Practitioner','71e2b222-eeb2-4266-9a5e-01273bd3aa5d','00634f82-b07f-4bbd-a6bb-53de397fc3a6','May 2028',0,'aws'],
+ ['GitHub Actions','8c9e44f3-ad66-40cd-bbff-c3959796f464','89efc3e7-842b-4790-b09b-9ea5efc71ec3','Dec 2027',0,'gh'],
+ ['GitHub Copilot','7e2b5467-2580-47a2-acd3-8463bd2331fc','','Jan 2028',0,'gh','','https://images.credly.com/images/6b924fae-3cd7-4233-b012-97413c62c85d/blob'],
+ ['GitHub Foundations','4c6840e9-4a1f-46a3-9363-26ae2bd27657','024d0122-724d-4c5a-bd83-cfe3c4b7a073','Aug 2027',0,'gh']
 ];
 var host=document.getElementById('badges');
 B.forEach(function(b){
  var el=document.createElement('div');el.className='badge'+(b[4]?' star':'');
  var isDb=b[5]==='db',link=b[6]||(b[1]?'https://www.credly.com/badges/'+b[1]:'');
- var fb='<div class="fallback'+(isDb?' db':'')+'">'+(isDb?'Databricks':'AWS')+'</div>';
+ var isGh=b[5]==='gh',fb='<div class="fallback'+(isDb?' db':isGh?' gh':'')+'">'+(isDb?'Databricks':isGh?'GitHub':'AWS')+'</div>';
  var box=document.createElement('div');box.className='img';
  var src=b[7]||(b[2]?'https://images.credly.com/size/180x180/images/'+b[2]+'/image.png':'');
  if(src){var im=new Image();im.alt='';im.loading='lazy';im.src=src;im.onerror=function(){box.innerHTML=fb};box.appendChild(im)}else box.innerHTML=fb;
