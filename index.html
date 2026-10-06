@@ -52,7 +52,7 @@ h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance;letter-spacing:-.015em}
 h2{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800}
 h3{font-size:1.15rem;font-weight:700}
 p{margin:0}
-section{padding-block:56px;display:grid;gap:26px}
+section{padding-block:56px;display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
 .lede{color:var(--muted);max-width:64ch}
 .sec-head{display:grid;gap:8px}
 
@@ -202,6 +202,26 @@ footer{color:var(--muted);font-size:.85rem;padding-block:22px 36px;border-top:1p
   .live,.portrait .ring,.arrow::before,.panel{animation:none}
   .bar .fill{transition:none}
 }
+/* experience: auto-advance, controls, swipe */
+.tabbar{display:flex;align-items:end;gap:12px;border-bottom:1px solid var(--line)}
+.tabbar .tabs{border-bottom:0;flex:1 1 auto;min-width:0}
+.tabs button{border-radius:10px 10px 0 0;transition:background .2s,color .2s}
+.tabs button:hover{background:var(--chip);color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--surface)}
+.tabs button[aria-selected="true"]::after{transform-origin:left;transform:scaleX(1)}
+#experience.auto .tabs button[aria-selected="true"]::after{animation:fillbar var(--dur,7s) linear forwards}
+@keyframes fillbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.stepper{display:flex;align-items:center;gap:8px;padding-bottom:8px;flex:0 0 auto}
+.stepper button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;transition:border-color .2s}
+.stepper button:hover{border-color:var(--accent)}
+.stepper svg{width:16px;height:16px}
+.stepper .count{font-size:.86rem;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums;min-width:38px;text-align:center}
+.panel.slide-next{animation:inR .4s ease}
+.panel.slide-prev{animation:inL .4s ease}
+@keyframes inR{from{opacity:0;transform:translateX(28px)}}
+@keyframes inL{from{opacity:0;transform:translateX(-28px)}}
+@media (max-width:820px){.tabbar{flex-direction:column;align-items:stretch;gap:0}.stepper{justify-content:flex-end;padding-block:8px}}
+@media (prefers-reduced-motion:reduce){.panel.slide-next,.panel.slide-prev{animation:none}}
 </style>
 </head>
 <body>
@@ -254,13 +274,20 @@ footer{color:var(--muted);font-size:.85rem;padding-block:22px 36px;border-top:1p
 <section id="experience">
   <div class="sec-head">
     <h2>Experience</h2>
-    <p class="lede">What each team got from my work. Pick a company to see the problem, the result and how the data flows.</p>
+    <p class="lede">What each team got from my work: the problem, the result and how the data flows. It moves through each company on its own, or tap, swipe or use the arrows.</p>
   </div>
-  <div class="tabs" role="tablist" aria-label="Companies">
+  <div class="tabbar">
+    <div class="tabs" role="tablist" aria-label="Companies">
     <button role="tab" id="t-procdna" aria-controls="p-procdna" aria-selected="true">ProcDNA<small>2026 – now</small></button>
     <button role="tab" id="t-techm" aria-controls="p-techm" aria-selected="false" tabindex="-1">Tech Mahindra<small>2025 – 26</small></button>
     <button role="tab" id="t-tcs" aria-controls="p-tcs" aria-selected="false" tabindex="-1">TCS<small>2022 – 25</small></button>
     <button role="tab" id="t-sansera" aria-controls="p-sansera" aria-selected="false" tabindex="-1">Sansera<small>2021 – 22</small></button>
+  </div>
+    <div class="stepper">
+      <button type="button" id="exp-prev" aria-label="Previous company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <span class="count" id="exp-count">1 / 4</span>
+      <button type="button" id="exp-next" aria-label="Next company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
   </div>
 
   <article class="panel" role="tabpanel" id="p-procdna" aria-labelledby="t-procdna">
@@ -401,11 +428,28 @@ var nav=document.getElementById('nav');function ns(){nav.classList.toggle('scrol
 (function(){var w=[].slice.call(document.querySelectorAll('.rot span')),i=0;if(still)return;
  setInterval(function(){var c=w[i];c.classList.remove('on');c.classList.add('out');i=(i+1)%w.length;var n=w[i];n.classList.remove('out');n.classList.add('on');setTimeout(function(){c.classList.remove('out')},450)},2400)})();
 
-// experience tabs
-(function(){var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
- function sel(t,focus){tabs.forEach(function(b){var on=b===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on});if(focus)t.focus()}
- tabs.forEach(function(b,i){b.addEventListener('click',function(){sel(b)});
-  b.addEventListener('keydown',function(e){var k=e.key,n=null;if(k==='ArrowRight')n=tabs[(i+1)%tabs.length];else if(k==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];else if(k==='Home')n=tabs[0];else if(k==='End')n=tabs[tabs.length-1];if(n){e.preventDefault();sel(n,true)}})})})();
+// experience: tabs that auto-advance, with prev/next, keyboard and swipe
+(function(){var sec=document.getElementById('experience'),tabs=[].slice.call(sec.querySelectorAll('[role=tab]')),cur=0,timer=null,resume=null,inView=false,DUR=7000;
+ var count=document.getElementById('exp-count');sec.style.setProperty('--dur',DUR/1000+'s');
+ function sel(i,dir,focus){i=(i+tabs.length)%tabs.length;var prev=cur;cur=i;
+  tabs.forEach(function(b,j){var on=j===i;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;var p=document.getElementById(b.getAttribute('aria-controls'));p.hidden=!on;
+   if(on){p.classList.remove('slide-next','slide-prev');void p.offsetWidth;p.classList.add(dir<0?'slide-prev':'slide-next')}});
+  var t=tabs[i];t.scrollIntoView({block:'nearest',inline:'nearest',behavior:still?'auto':'smooth'});
+  count.textContent=(i+1)+' / '+tabs.length;if(focus)t.focus();restartBar()}
+ function restartBar(){var t=tabs[cur];t.style.animation='none';void t.offsetWidth;t.style.animation=''}
+ function play(){if(still||!inView)return;stop();sec.classList.add('auto');restartBar();timer=setInterval(function(){sel(cur+1,1)},DUR)}
+ function stop(){clearInterval(timer);timer=null;sec.classList.remove('auto')}
+ function hold(){stop();clearTimeout(resume);resume=setTimeout(play,15000)}
+ tabs.forEach(function(b,i){b.addEventListener('click',function(){sel(i,i<cur?-1:1);hold()});
+  b.addEventListener('keydown',function(e){var k=e.key,n=null;if(k==='ArrowRight')n=cur+1;else if(k==='ArrowLeft')n=cur-1;else if(k==='Home')n=0;else if(k==='End')n=tabs.length-1;if(n!==null){e.preventDefault();sel(n,n<cur?-1:1,true);hold()}})});
+ document.getElementById('exp-prev').addEventListener('click',function(){sel(cur-1,-1);hold()});
+ document.getElementById('exp-next').addEventListener('click',function(){sel(cur+1,1);hold()});
+ var x0=null,y0=null;sec.addEventListener('touchstart',function(e){var t=e.touches[0];x0=t.clientX;y0=t.clientY},{passive:true});
+ sec.addEventListener('touchend',function(e){if(x0===null)return;var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){sel(cur+(dx<0?1:-1),dx<0?1:-1);hold()}},{passive:true});
+ sec.addEventListener('mouseenter',function(){if(timer){stop();sec._hover=true}});
+ sec.addEventListener('mouseleave',function(){if(sec._hover){sec._hover=false;play()}});
+ if('IntersectionObserver' in window)new IntersectionObserver(function(e){inView=e[0].isIntersecting;if(inView&&!resume)play();else if(!inView)stop()},{threshold:.35}).observe(sec);
+})();
 
 // badges: [name, credly badge id, credly image id, valid until, featured, issuer, verify url override]
 var B=[
